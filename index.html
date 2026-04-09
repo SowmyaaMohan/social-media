@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialHub - Mini Social Media</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .create-post {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .create-post textarea {
+            width: 100%;
+            border: none;
+            resize: vertical;
+            font-size: 16px;
+            font-family: inherit;
+            min-height: 80px;
+            padding: 15px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            margin-bottom: 15px;
+        }
+
+        .create-post textarea:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .post-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .post-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .posts {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .post {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .post-author {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .post-time {
+            color: #999;
+            font-size: 14px;
+            margin-left: auto;
+        }
+
+        .post-content {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: color 0.2s;
+            padding: 8px 12px;
+            border-radius: 20px;
+        }
+
+        .action-btn:hover {
+            color: #667eea;
+            background: #f0f2f5;
+        }
+
+        .action-btn.liked {
+            color: #e0245e;
+        }
+
+        .like-count, .comment-count {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .comments {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .comments.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+            }
+        }
+
+        .comment {
+            display: flex;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .comment-text {
+            color: #666;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+
+        .add-comment {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f2f5;
+        }
+
+        .add-comment input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 10px 18px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .add-comment input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .add-comment-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .post-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 SocialHub</h1>
+            <p>Share your thoughts with the world!</p>
+        </div>
+
+        <div class="create-post">
+            <textarea id="postInput" placeholder="What's on your mind? Share something awesome..."></textarea>
+            <button class="post-btn" onclick="createPost()">Post</button>
+        </div>
+
+        <div class="posts" id="postsContainer">
+            <!-- Posts will be dynamically added here -->
+        </div>
+    </div>
+
+    <script>
+        let posts = [];
+        let nextId = 1;
+
+        // Sample posts for demo
+        function createSamplePosts() {
+            const samplePosts = [
+                {
+                    id: nextId++,
+                    author: "Alice Johnson",
+                    avatar: "AJ",
+                    content: "Just finished building my first social media app! 🚀 So excited to share it with everyone!",
+                    likes: 12,
+                    liked: false,
+                    comments: [
+                        { author: "Bob Smith", avatar: "BS", text: "That's awesome Alice! Great work! 👏" },
+                        { author: "Carol Davis", avatar: "CD", text: "Looks amazing! Can I try it? 😍" }
+                    ]
+                },
+                {
+                    id: nextId++,
+                    author: "Mike Chen",
+                    avatar: "MC",
+                    content: "Anyone else loving the new gradient backgrounds? They make everything look so much better! 🎨",
+                    likes: 8,
+                    liked: false,
+                    comments: []
+                }
+            ];
+            
+            posts = samplePosts;
+            renderPosts();
+        }
+
+        function createPost() {
+            const input = document.getElementById('postInput');
+            const content = input.value.trim();
+            
+            if (content) {
+                const newPost = {
+                    id: nextId++,
+                    author: "You",
+                    avatar: "👤",
+                    content: content,
+                    likes: 0,
+                    liked: false,
+                    comments: []
+                };
+                
+                posts.unshift(newPost);
+                input.value = '';
+                renderPosts();
+            }
+        }
+
+        function renderPosts() {
+            const container = document.getElementById('postsContainer');
+            container.innerHTML = posts.map(post => createPostHTML(post)).join('');
+        }
+
+        function createPostHTML(post) {
+            const timeAgo = getTimeAgo(new Date());
+            const commentCount = post.comments.length;
+            
+            const commentsHTML = post.comments.map(comment => `
+                <div class="comment">
+                    <div class="comment-avatar">${comment.avatar}</div>
+                    <div class="comment-content">
+                        <div class="comment-author">${comment.author}</div>
+                        <div class="comment-text">${comment.text}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="post" data-id="${post.id}">
+                    <div class="post-header">
+                        <div class="avatar">${post.avatar}</div>
+                        <div>
+                            <div class="post-author">${post.author}</div>
+                        </div>
+                        <div class="post-time">${timeAgo}</div>
+                    </div>
+                    <div class="post-content">${post.content}</div>
+                    <div class="post-actions">
+                        <button class="action-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id})">
+                            ${post.liked ? '❤️' : '🤍'} <span class="like-count">${post.likes}</span>
+                        </button>
+                        <button class="action-btn" onclick="toggleComments(${post.id})">
+                            💬 <span class="comment-count">${commentCount}</span>
+                        </button>
+                    </div>
+                    <div class="comments" id="comments-${post.id}">
+                        ${commentsHTML}
+                        <div class="add-comment">
+                            <input type="text" placeholder="Add a comment..." onkeypress="handleCommentEnter(event, ${post.id})">
+                            <button class="add-comment-btn" onclick="addComment(${post.id})">Post</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleLike(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                post.liked = !post.liked;
+                post.likes += post.liked ? 1 : -1;
+                renderPosts();
+            }
+        }
+
+        function toggleComments(postId) {
+            const commentsDiv = document.getElementById(`comments-${postId}`);
+            commentsDiv.classList.toggle('show');
+        }
+
+        function addComment(postId) {
+            const input = document.querySelector(`#comments-${postId} input`);
+            const text = input.value.trim();
+            
+            if (text) {
+                const post = posts.find(p => p.id === postId);
+                post.comments.push({
+                    author: "You",
+                    avatar: "👤",
+                    text: text
+                });
+                input.value = '';
+                renderPosts();
+            }
+        }
+
+        function handleCommentEnter(event, postId) {
+            if (event.key === 'Enter') {
+                addComment(postId);
+            }
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            
+            if (minutes < 1) return 'Just now';
+            if (minutes === 1) return '1 min ago';
+            if (minutes < 60) return `${minutes} mins ago`;
+            return '1 hr ago';
+        }
+
+        // Enter key support for new posts
+        document.getElementById('postInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                createPost();
+            }
+        });
+
+        // Initialize with sample posts
+        createSamplePosts();
+
+        // Auto-resize textarea
+        document.getElementById('postInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+    </script>
+</body>
+</html>
